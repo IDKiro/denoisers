@@ -29,6 +29,7 @@ def load_checkpoint(checkpoint_dir):
         exit(1)
 
     return model
+    
 
 if __name__ == '__main__':
     input_dir = './dataset/test/'
