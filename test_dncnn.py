@@ -13,7 +13,7 @@ import re
 import cv2
 
 from utils import *
-from model.unet import UNet
+from model.dncnn import DnCNN
 
 
 def load_checkpoint(checkpoint_dir):
@@ -21,7 +21,7 @@ def load_checkpoint(checkpoint_dir):
         # load existing model
         model_info = torch.load(checkpoint_dir + 'checkpoint.pth.tar')
         print('==> loading existing model:', checkpoint_dir + 'checkpoint.pth.tar')
-        model = UNet()
+        model = DnCNN(3)
         model.cuda()
         model.load_state_dict(model_info['state_dict'])
     else:
@@ -33,7 +33,7 @@ def load_checkpoint(checkpoint_dir):
 
 if __name__ == '__main__':
     input_dir = './dataset/test/'
-    checkpoint_dir = './checkpoint/unet/'
+    checkpoint_dir = './checkpoint/dncnn/'
 
     test_fns = glob.glob(input_dir + 'Batch_*')
 
@@ -83,4 +83,5 @@ if __name__ == '__main__':
                 psnr=psnr,
                 ssim=ssim,
                 time=stime))
+
 

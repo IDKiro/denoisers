@@ -42,10 +42,9 @@ if __name__ == '__main__':
 
     psnr = AverageMeter()
     ssim = AverageMeter()
+    stime = AverageMeter()
 
-    for ind in np.random.permutation(len(test_fns)):
-        test_fn = test_fns[ind]
-
+    for i, test_fn in enumerate(test_fns):
         test_origin_fns = glob.glob(test_fn + '/*Reference.bmp')
         test_noise_fns = glob.glob(test_fn + '/*Noisy.bmp')
 
@@ -63,7 +62,10 @@ if __name__ == '__main__':
 
             input_var = input_var.cuda()
 
+            st = time.time()
             output = model(input_var)
+            spend_time = time.time() - st
+
             output_np = output.squeeze().cpu().detach().numpy()
             output_np = chw_to_hwc(np.clip(output_np, 0, 1))
 
@@ -72,9 +74,13 @@ if __name__ == '__main__':
             
             psnr.update(test_psnr)
             ssim.update(test_ssim)
+            if i > 0:
+                stime.update(spend_time * 1000) # ms
 
             print('PSNR: {psnr.val:.4f} ({psnr.avg:.4f})\t'
-                'SSIM: {ssim.val:.4f} ({ssim.avg:.4f})'.format(
+                'SSIM: {ssim.val:.4f} ({ssim.avg:.4f})\t'
+                'Time: {time.val:.2f} ({time.avg:.2f})'.format(
                 psnr=psnr,
-                ssim=ssim))
+                ssim=ssim,
+                time=stime))
 
