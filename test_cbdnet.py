@@ -49,11 +49,11 @@ if __name__ == '__main__':
         test_noise_fns = glob.glob(test_fn + '/*Noisy.bmp')
 
         origin_img = read_img(test_origin_fns[0])
-        origin_img = origin_img[0:512, 0:512, :] # TODO
+        origin_img = origin_img[0:1024, 0:1024, :] # TODO
 
         for test_noise_fn in test_noise_fns:
             noise_img = read_img(test_noise_fn)
-            noise_img = noise_img[0:512, 0:512, :]  # TODO
+            noise_img = noise_img[0:1024, 0:1024, :]  # TODO
             noise_img_chw = hwc_to_chw(noise_img)
 
             input_var = torch.autograd.Variable(
@@ -63,7 +63,7 @@ if __name__ == '__main__':
             input_var = input_var.cuda()
 
             st = time.time()
-            output = model(input_var)
+            _, output = model(input_var)
             spend_time = time.time() - st
 
             output_np = output.squeeze().cpu().detach().numpy()
