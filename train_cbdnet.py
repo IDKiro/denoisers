@@ -63,7 +63,9 @@ if __name__ == '__main__':
     for i in range(len(train_fns)):
         origin_imgs[i] = []
         noise_imgs[i] = []
-
+        
+    if not os.path.isdir(checkpoint_dir):
+        os.makedirs(checkpoint_dir)
     model, optimizer, cur_epoch = load_checkpoint(checkpoint_dir)
 
     criterion = asym_loss()
