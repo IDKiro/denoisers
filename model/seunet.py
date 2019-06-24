@@ -4,32 +4,50 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
-class UNet(nn.Module):
+class SEUNet(nn.Module):
     def __init__(self):
-        super(UNet, self).__init__()
+        super(SEUNet, self).__init__()
         self.inc = inconv(3, 32)
+        self.se1 = SELayer(32)
         self.down1 = down(32, 64)
+        self.se2 = SELayer(64)
         self.down2 = down(64, 128)
+        self.se3 = SELayer(128)
         self.down3 = down(128, 256)
+        self.se4 = SELayer(256)
         self.down4 = down(256, 512)
+        self.se5 = SELayer(512)
         self.up1 = up(512, 256)
+        self.se6 = SELayer(256)
         self.up2 = up(256, 128)
+        self.se7 = SELayer(128)
         self.up3 = up(128, 64)
+        self.se8 = SELayer(64)
         self.up4 = up(64, 32)
+        self.se9 = SELayer(32)
         self.outc = outconv(32, 3)
 
     def forward(self, x):
-        inc = self.inc(x)
-        down1 = self.down1(inc)
-        down2 = self.down2(down1)
-        down3 = self.down3(down2)
-        down4 = self.down4(down3)
-        up1 = self.up1(down4, down3)
-        up2 = self.up2(up1, down2)
-        up3 = self.up3(up2, down1)
-        up4 = self.up4(up3, inc)
-        out = self.outc(up4)
-        return out
+        down1 = self.inc(x)
+        se1 = self.se1(down1)
+        down2 = self.down1(se1)
+        se2 = self.se2(down2)
+        down3 = self.down2(se2)
+        se3 = self.se3(down3)
+        down4 = self.down3(se3)
+        se4 = self.se4(down4)
+        down5 = self.down4(se4)
+        se5 = self.se5(down5)
+        up1 = self.up1(se5, se4)
+        se6 = self.se6(up1)
+        up2 = self.up2(se6, se3)
+        se7 = self.se7(up2)
+        up3 = self.up3(se7, se2)
+        se8 = self.se8(up3)
+        up4 = self.up4(se8, se1)
+        se9 = self.se9(up4)
+        up5 = self.outc(se9)
+        return up5
 
 
 class double_conv(nn.Module):
@@ -100,3 +118,19 @@ class outconv(nn.Module):
         x = self.conv(x)
         return x
 
+class SELayer(nn.Module):
+    def __init__(self, channel, reduction=16):
+        super(SELayer, self).__init__()
+        self.avg_pool = nn.AdaptiveAvgPool2d(1)
+        self.fc = nn.Sequential(
+            nn.Linear(channel, channel // reduction, bias=False),
+            nn.ReLU(inplace=True),
+            nn.Linear(channel // reduction, channel, bias=False),
+            nn.Sigmoid()
+        )
+
+    def forward(self, x):
+        b, c, _, _ = x.size()
+        y = self.avg_pool(x).view(b, c)
+        y = self.fc(y).view(b, c, 1, 1)
+        return x * y.expand_as(x)

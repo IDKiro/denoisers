@@ -132,11 +132,11 @@ if __name__ == '__main__':
                 loss.backward()
                 optimizer.step()
 
-                print('[{0}][{1}/{2}]\t'
+                print('[{0}][{1}]\t'
                     'lr: {lr:.5f}\t'
                     'Loss: {loss.val:.4f} ({loss.avg:.4f})\t'
                     'Time: {time:.3f}'.format(
-                    epoch, cnt, len(train_fns),
+                    epoch, cnt,
                     lr=optimizer.param_groups[-1]['lr'],
                     loss=losses,
                     time=time.time()-st))

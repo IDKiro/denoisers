@@ -11,7 +11,7 @@ import re
 import cv2
 
 from utils import *
-from model.unet import UNet
+from model.ssunet import SSUNet
 
 
 def load_checkpoint(checkpoint_dir):
@@ -19,7 +19,7 @@ def load_checkpoint(checkpoint_dir):
         # load existing model
         model_info = torch.load(checkpoint_dir + 'checkpoint.pth.tar')
         print('==> loading existing model:', checkpoint_dir + 'checkpoint.pth.tar')
-        model = UNet()
+        model = SSUNet()
         model.cuda()
         model.load_state_dict(model_info['state_dict'])
         optimizer = torch.optim.Adam(model.parameters())
@@ -27,7 +27,7 @@ def load_checkpoint(checkpoint_dir):
         cur_epoch = model_info['epoch']
     else:
         # create model
-        model = UNet()
+        model = SSUNet()
         model.cuda()
         optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
         cur_epoch = 0
@@ -48,8 +48,8 @@ def adjust_learning_rate(optimizer, epoch, lr_update_freq):
 
 if __name__ == '__main__':
     input_dir = './dataset/train/'
-    checkpoint_dir = './checkpoint/unet/'
-    result_dir = './result/unet/'
+    checkpoint_dir = './checkpoint/ssunet/'
+    result_dir = './result/ssunet/'
 
     ps = 512
     save_freq = 100
