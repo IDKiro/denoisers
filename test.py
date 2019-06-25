@@ -80,8 +80,8 @@ for i, test_fn in enumerate(test_fns):
     for test_noise_fn in test_noise_fns:
         noise_img = read_img(test_noise_fn)
 
-        for ix in range(6):
-            for iy in range(3):
+        for ix in range(0, 8, 2):
+            for iy in range(0, 4, 2):
                 temp_origin_img = origin_img[512*ix:512*(ix+1), 512*iy:512*(iy+1), :]
                 temp_noise_img = noise_img[512*ix:512*(ix+1), 512*iy:512*(iy+1), :]
 

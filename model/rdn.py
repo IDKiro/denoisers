@@ -30,12 +30,12 @@ class RDN(nn.Module):
     def __init__(self):
         super(RDN, self).__init__()
         '''
-        D: RDB number 20
-        C: the number of conv layer in RDB 6
-        G: the growth rate 32
-        G0:local and global feature fusion layers 64filter
+        D: RDB number
+        C: the number of conv layer in RDB
+        G: the growth rate
+        G0:local and global feature fusion layers
         '''
-        self.D = 3
+        self.D = 4
         self.C = 6
         self.G = 32
         self.G0 = 64
