@@ -25,7 +25,7 @@ else:
     print('Error: no support model detected!')
     exit(1)
 
-flops, params = profile(model, input_size=(1, 3, 768, 768))
+flops, params = profile(model, input_size=(1, 3, 512, 512))
 
 
 print('FLOPS: {flops:.1f}\t'

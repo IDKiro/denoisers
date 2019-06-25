@@ -76,47 +76,51 @@ for i, test_fn in enumerate(test_fns):
     test_noise_fns = glob.glob(test_fn + '/*Noisy.bmp')
 
     origin_img = read_img(test_origin_fns[0])
-    origin_img = origin_img[2214:2982, 1348:2116, :] # TODO
 
     for test_noise_fn in test_noise_fns:
         noise_img = read_img(test_noise_fn)
-        noise_img = noise_img[2214:2982, 1348:2116, :]  # TODO
-        noise_img_chw = hwc_to_chw(noise_img)
 
-        input_var = torch.autograd.Variable(
-            torch.from_numpy(noise_img_chw.copy()).type(torch.FloatTensor).unsqueeze(0)
-            )
+        for ix in range(6):
+            for iy in range(3):
+                temp_origin_img = origin_img[512*ix:512*(ix+1), 512*iy:512*(iy+1), :]
+                temp_noise_img = noise_img[512*ix:512*(ix+1), 512*iy:512*(iy+1), :]
 
-        if args.gpu:
-            input_var = input_var.cuda()
+                temp_noise_img_chw = hwc_to_chw(temp_noise_img)
 
-        st = time.time()
+                input_var = torch.autograd.Variable(
+                    torch.from_numpy(temp_noise_img_chw.copy()).type(torch.FloatTensor).unsqueeze(0)
+                    )
 
-        # TODO: output
-        if args.model == 'cbdnet':
-            _, output = model(input_var)
-        else:
-            output = model(input_var)
+                if args.gpu:
+                    input_var = input_var.cuda()
 
-        spend_time = time.time() - st
+                st = time.time()
 
-        output_np = output.squeeze().cpu().detach().numpy()
-        output_np = chw_to_hwc(np.clip(output_np, 0, 1))
+                # TODO: output
+                if args.model == 'cbdnet':
+                    _, output = model(input_var)
+                else:
+                    output = model(input_var)
 
-        test_psnr = compare_psnr(origin_img, output_np, data_range=1)
-        test_ssim = compare_ssim(origin_img, output_np, data_range=1, multichannel=True)
-        
-        psnr.update(test_psnr)
-        ssim.update(test_ssim)
-        if i > 0:
-            stime.update(spend_time * 1000) # ms
+                spend_time = time.time() - st
 
-        print('PSNR: {psnr.val:.4f} ({psnr.avg:.4f})\t'
-            'SSIM: {ssim.val:.4f} ({ssim.avg:.4f})\t'
-            'Time: {time.val:.2f} ({time.avg:.2f})'.format(
-            psnr=psnr,
-            ssim=ssim,
-            time=stime))
+                output_np = output.squeeze().cpu().detach().numpy()
+                output_np = chw_to_hwc(np.clip(output_np, 0, 1))
+
+                test_psnr = compare_psnr(temp_origin_img, output_np, data_range=1)
+                test_ssim = compare_ssim(temp_origin_img, output_np, data_range=1, multichannel=True)
+                
+                psnr.update(test_psnr)
+                ssim.update(test_ssim)
+                if i > 0:
+                    stime.update(spend_time * 1000) # ms
+
+                print('PSNR: {psnr.val:.4f} ({psnr.avg:.4f})\t'
+                    'SSIM: {ssim.val:.4f} ({ssim.avg:.4f})\t'
+                    'Time: {time.val:.2f} ({time.avg:.2f})'.format(
+                    psnr=psnr,
+                    ssim=ssim,
+                    time=stime))
 
 print('PSNR: {psnr.avg:.4f}\t'
     'SSIM: {ssim.avg:.4f}\t'
