@@ -35,7 +35,7 @@ class RDN(nn.Module):
         G: the growth rate 32
         G0:local and global feature fusion layers 64filter
         '''
-        self.D = 4
+        self.D = 3
         self.C = 6
         self.G = 32
         self.G0 = 64
