@@ -12,7 +12,7 @@ import cv2
 import argparse
 
 from utils import *
-from model import unet, seunet, ssunet, gcunet, cbdnet, dncnn
+from model import unet, seunet, ssunet, gcunet, cbdnet, dncnn, rdn
 
 
 def save_checkpoint(state, is_best, filename='checkpoint.pth.tar'):
@@ -70,6 +70,10 @@ elif args.model == 'dncnn':
     checkpoint_dir = './checkpoint/dncnn/'
     result_dir = './result/dncnn/'
     model = dncnn.DnCNN(3)
+elif args.model == 'rdn':
+    checkpoint_dir = './checkpoint/rdn/'
+    result_dir = './result/rdn/'
+    model = rdn.RDN()
 else:
     print('Error: no support model detected!')
     exit(1)
