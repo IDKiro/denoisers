@@ -11,9 +11,10 @@ import glob
 import re
 import cv2
 import argparse
+from thop import profile
 
 from utils import *
-from model import unet, seunet, ssunet, gcunet, cbdnet, dncnn
+from model import unet, seunet, ssunet, gcunet, cbdnet, dncnn, rdn
 
 parser = argparse.ArgumentParser(description = 'Test')
 parser.add_argument('model', default='unet', type=str, help = 'model name (default: UNet)')
@@ -42,9 +43,14 @@ elif args.model == 'cbdnet':
 elif args.model == 'dncnn':
     checkpoint_dir = './checkpoint/dncnn/'
     model = dncnn.DnCNN(3)
+elif args.model == 'rdn':
+    checkpoint_dir = './checkpoint/rdn/'
+    model = rdn.RDN()
 else:
     print('Error: no support model detected!')
     exit(1)
+
+flops, params = profile(model, input_size=(1, 3, 768, 768))
 
 if args.gpu:
     print('Using GPU!')
@@ -115,3 +121,13 @@ for i, test_fn in enumerate(test_fns):
             ssim=ssim,
             time=stime))
 
+print('PSNR: {psnr.avg:.4f}\t'
+    'SSIM: {ssim.avg:.4f}\t'
+    'Time: {time.avg:.2f}\t'
+    'FLOPS: {flops:d}\t'
+    'PARAMS: {params:d}'.format(
+    psnr=psnr,
+    ssim=ssim,
+    time=stime,
+    flops=flops,
+    params=params))
