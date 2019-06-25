@@ -17,6 +17,7 @@ from model import unet, seunet, ssunet, gcunet, cbdnet, dncnn
 
 parser = argparse.ArgumentParser(description = 'Test')
 parser.add_argument('model', default='unet', type=str, help = 'model name (default: UNet)')
+parser.add_argument('--gpu', nargs='?', const=1, help = 'Use GPU')
 args = parser.parse_args()
 
 input_dir = './dataset/test/'
@@ -45,8 +46,11 @@ else:
     print('Error: no support model detected!')
     exit(1)
 
-
-model.cuda()
+if args.gpu:
+    print('Using GPU!')
+    model.cuda()
+else:
+    print('Using CPU!')
 
 if os.path.exists(checkpoint_dir + 'checkpoint.pth.tar'):
     # load existing model
@@ -69,18 +73,19 @@ for i, test_fn in enumerate(test_fns):
     test_noise_fns = glob.glob(test_fn + '/*Noisy.bmp')
 
     origin_img = read_img(test_origin_fns[0])
-    origin_img = origin_img[0:1024, 0:1024, :] # TODO
+    # origin_img = origin_img[0:1024, 0:1024, :] # TODO
 
     for test_noise_fn in test_noise_fns:
         noise_img = read_img(test_noise_fn)
-        noise_img = noise_img[0:1024, 0:1024, :]  # TODO
+        # noise_img = noise_img[0:1024, 0:1024, :]  # TODO
         noise_img_chw = hwc_to_chw(noise_img)
 
         input_var = torch.autograd.Variable(
             torch.from_numpy(noise_img_chw.copy()).type(torch.FloatTensor).unsqueeze(0)
             )
 
-        input_var = input_var.cuda()
+        if args.gpu:
+            input_var = input_var.cuda()
 
         st = time.time()
 
