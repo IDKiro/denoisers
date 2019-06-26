@@ -7,12 +7,10 @@ from torch.autograd import Variable
 import torch.nn.functional as F
 import numpy as np
 import glob
-import re
-import cv2
 import argparse
 
 from utils import *
-from model import unet, seunet, ssunet, gcunet, cbdnet, dncnn, rdn
+from model import unet, seunet, ssunet, gcunet, cbdnet, dncnn, rdn, n3net
 
 
 def save_checkpoint(state, is_best, filename='checkpoint.pth.tar'):
@@ -69,11 +67,18 @@ elif args.model == 'cbdnet':
 elif args.model == 'dncnn':
     checkpoint_dir = './checkpoint/dncnn/'
     result_dir = './result/dncnn/'
-    model = dncnn.DnCNN(3)
+    model = dncnn.DnCNN()
 elif args.model == 'rdn':
     checkpoint_dir = './checkpoint/rdn/'
     result_dir = './result/rdn/'
     model = rdn.RDN()
+elif args.model == 'n3net':
+    checkpoint_dir = './checkpoint/n3net/'
+    result_dir = './result/n3net/'
+    model = n3net.N3Net(3, 3, 3,
+                        nblocks=1, 
+                        block_opt={'features':64, 'kernel':3, 'depth':17, 'residual':1, 'bn':0}, 
+                        nl_opt={'k':4}, residual=False)
 else:
     print('Error: no support model detected!')
     exit(1)

@@ -8,12 +8,10 @@ import torch.nn.functional as F
 from skimage.measure import compare_psnr, compare_ssim
 import numpy as np
 import glob
-import re
-import cv2
 import argparse
 
 from utils import *
-from model import unet, seunet, ssunet, gcunet, cbdnet, dncnn, rdn
+from model import unet, seunet, ssunet, gcunet, cbdnet, dncnn, rdn, n3net
 
 parser = argparse.ArgumentParser(description = 'Test')
 parser.add_argument('model', default='unet', type=str, help = 'model name (default: UNet)')
@@ -41,10 +39,16 @@ elif args.model == 'cbdnet':
     model = cbdnet.CBDNet()
 elif args.model == 'dncnn':
     checkpoint_dir = './checkpoint/dncnn/'
-    model = dncnn.DnCNN(3)
+    model = dncnn.DnCNN()
 elif args.model == 'rdn':
     checkpoint_dir = './checkpoint/rdn/'
     model = rdn.RDN()
+elif args.model == 'n3net':
+    checkpoint_dir = './checkpoint/n3net/'
+    model = n3net.N3Net(3, 3, 3,
+                        nblocks=1, 
+                        block_opt={'features':64, 'kernel':3, 'depth':17, 'residual':1, 'bn':0}, 
+                        nl_opt={'k':4}, residual=False)
 else:
     print('Error: no support model detected!')
     exit(1)
