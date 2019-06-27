@@ -14,9 +14,9 @@ from model import unet, seunet, ssunet, gcunet, cbdnet, dncnn, rdn, n3net
 
 
 def save_checkpoint(state, is_best, filename='checkpoint.pth.tar'):
-	torch.save(state, checkpoint_dir + 'checkpoint.pth.tar')
+	torch.save(state, os.path.join(checkpoint_dir, 'checkpoint.pth.tar'))
 	if is_best:
-		shutil.copyfile(checkpoint_dir + 'checkpoint.pth.tar',checkpoint_dir + 'model_best.pth.tar')
+		shutil.copyfile(os.path.join(checkpoint_dir, 'checkpoint.pth.tar'), os.path.join(checkpoint_dir, 'model_best.pth.tar'))
 
 def adjust_learning_rate(optimizer, epoch, lr_update_freq):
 	if not epoch % lr_update_freq and epoch:
@@ -45,36 +45,20 @@ for i in range(len(train_fns)):
 
 # TODO: model
 if args.model == 'unet':
-    checkpoint_dir = './checkpoint/unet/'
-    result_dir = './result/unet/'
     model = unet.UNet()
 elif args.model == 'seunet':
-    checkpoint_dir = './checkpoint/seunet/'
-    result_dir = './result/seunet/'
     model = seunet.SEUNet()
 elif args.model == 'ssunet':
-    checkpoint_dir = './checkpoint/ssunet/'
-    result_dir = './result/ssunet/'
     model = ssunet.SSUNet()
 elif args.model == 'gcunet':
-    checkpoint_dir = './checkpoint/gcunet/'
-    result_dir = './result/gcunet/'
     model = gcunet.GCUNet()
 elif args.model == 'cbdnet':
-    checkpoint_dir = './checkpoint/cbdnet/'
-    result_dir = './result/cbdnet/'
     model = cbdnet.CBDNet()
 elif args.model == 'dncnn':
-    checkpoint_dir = './checkpoint/dncnn/'
-    result_dir = './result/dncnn/'
     model = dncnn.DnCNN()
 elif args.model == 'rdn':
-    checkpoint_dir = './checkpoint/rdn/'
-    result_dir = './result/rdn/'
     model = rdn.RDN()
 elif args.model == 'n3net':
-    checkpoint_dir = './checkpoint/n3net/'
-    result_dir = './result/n3net/'
     model = n3net.N3Net(3, 3, 3,
                         nblocks=1, 
                         block_opt={'features':64, 'kernel':3, 'depth':17, 'residual':1, 'bn':0}, 
@@ -83,12 +67,15 @@ else:
     print('Error: no support model detected!')
     exit(1)
 
+checkpoint_dir = os.path.join('./checkpoint/', args.model)
+result_dir = os.path.join('./result/', args.model)
+
 model.cuda()
 
-if os.path.exists(checkpoint_dir + 'checkpoint.pth.tar'):
+if os.path.exists(os.path.join(checkpoint_dir, 'checkpoint.pth.tar')):
     # load existing model
-    model_info = torch.load(checkpoint_dir + 'checkpoint.pth.tar')
-    print('==> loading existing model:', checkpoint_dir + 'checkpoint.pth.tar')
+    model_info = torch.load(os.path.join(checkpoint_dir, 'checkpoint.pth.tar'))
+    print('==> loading existing model:', os.path.join(checkpoint_dir, 'checkpoint.pth.tar'))
     model.load_state_dict(model_info['state_dict'])
     optimizer = torch.optim.Adam(model.parameters())
     optimizer.load_state_dict(model_info['optimizer'])
@@ -185,14 +172,14 @@ for epoch in range(cur_epoch, 2001):
                 time=time.time()-st))
 
             if epoch % save_freq == 0:
-                if not os.path.isdir(result_dir + '%04d'%epoch):
-                    os.makedirs(result_dir + '%04d'%epoch)
+                if not os.path.isdir(os.path.join(result_dir, '%04d'%epoch)):
+                    os.makedirs(os.path.join(result_dir, '%04d'%epoch))
 
                 output_np = output.squeeze().cpu().detach().numpy()
                 output_np = chw_to_hwc(np.clip(output_np, 0, 1))
 
                 temp = np.concatenate((temp_origin_img, temp_noise_img, output_np), axis=1)
-                scipy.misc.toimage(temp*255, high=255, low=0, cmin=0, cmax=255).save(result_dir + '%04d/train_%d_%d.jpg'%(epoch, ind, nind))
+                scipy.misc.toimage(temp*255, high=255, low=0, cmin=0, cmax=255).save(os.path.join(result_dir, '%04d/train_%d_%d.jpg'%(epoch, ind, nind)))
     
     save_checkpoint({
         'epoch': epoch + 1,

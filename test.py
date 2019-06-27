@@ -15,7 +15,7 @@ from model import unet, seunet, ssunet, gcunet, cbdnet, dncnn, rdn, n3net
 
 parser = argparse.ArgumentParser(description = 'Test')
 parser.add_argument('model', default='unet', type=str, help = 'model name (default: UNet)')
-parser.add_argument('--gpu', nargs='?', const=1, help = 'Use GPU')
+parser.add_argument('--cpu', nargs='?', const=1, help = 'Use CPU')
 args = parser.parse_args()
 
 input_dir = './dataset/test/'
@@ -23,28 +23,20 @@ test_fns = glob.glob(input_dir + 'Batch_*')
 
 # TODO: model
 if args.model == 'unet':
-    checkpoint_dir = './checkpoint/unet/'
     model = unet.UNet()
 elif args.model == 'seunet':
-    checkpoint_dir = './checkpoint/seunet/'
     model = seunet.SEUNet()
 elif args.model == 'ssunet':
-    checkpoint_dir = './checkpoint/ssunet/'
     model = ssunet.SSUNet()
 elif args.model == 'gcunet':
-    checkpoint_dir = './checkpoint/gcunet/'
     model = gcunet.GCUNet()
 elif args.model == 'cbdnet':
-    checkpoint_dir = './checkpoint/cbdnet/'
     model = cbdnet.CBDNet()
 elif args.model == 'dncnn':
-    checkpoint_dir = './checkpoint/dncnn/'
     model = dncnn.DnCNN()
 elif args.model == 'rdn':
-    checkpoint_dir = './checkpoint/rdn/'
     model = rdn.RDN()
 elif args.model == 'n3net':
-    checkpoint_dir = './checkpoint/n3net/'
     model = n3net.N3Net(3, 3, 3,
                         nblocks=1, 
                         block_opt={'features':64, 'kernel':3, 'depth':17, 'residual':1, 'bn':0}, 
@@ -53,16 +45,18 @@ else:
     print('Error: no support model detected!')
     exit(1)
 
-if args.gpu:
+checkpoint_dir = os.path.join('./checkpoint/', args.model)
+
+if not args.cpu:
     print('Using GPU!')
     model.cuda()
 else:
     print('Using CPU!')
 
-if os.path.exists(checkpoint_dir + 'checkpoint.pth.tar'):
+if os.path.exists(os.path.join(checkpoint_dir, 'checkpoint.pth.tar')):
     # load existing model
-    model_info = torch.load(checkpoint_dir + 'checkpoint.pth.tar')
-    print('==> loading existing model:', checkpoint_dir + 'checkpoint.pth.tar')
+    model_info = torch.load(os.path.join(checkpoint_dir, 'checkpoint.pth.tar'))
+    print('==> loading existing model:', os.path.join(checkpoint_dir, 'checkpoint.pth.tar'))
     model.load_state_dict(model_info['state_dict'])
 else:
     print('Error: no trained model detected!')
@@ -95,7 +89,7 @@ for i, test_fn in enumerate(test_fns):
                     torch.from_numpy(temp_noise_img_chw.copy()).type(torch.FloatTensor).unsqueeze(0)
                     )
 
-                if args.gpu:
+                if not args.cpu:
                     input_var = input_var.cuda()
 
                 st = time.time()

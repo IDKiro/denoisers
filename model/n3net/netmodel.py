@@ -128,8 +128,8 @@ class N3Block(nn.Module):
     N3Block operating on a 2D images
     """
     def __init__(self, nplanes_in, k, patchsize=10, stride=5,
-                 nl_match_window=15,
-                 temp_opt={}, embedcnn_opt={}):
+                nl_match_window=15,
+                temp_opt={}, embedcnn_opt={}):
         r"""
         :param nplanes_in: number of input features
         :param k: number of neighbors to sample
