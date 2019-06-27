@@ -6,16 +6,18 @@ import torch.nn as nn
 from torch.autograd import Variable
 import torch.nn.functional as F
 from skimage.measure import compare_psnr, compare_ssim
+from thop import profile
 import numpy as np
 import glob
 import argparse
 
 from utils import *
-from model import unet, seunet, ssunet, gcunet, cbdnet, dncnn, rdn, n3net
+from model import unet, seunet, ssunet, gcunet, cbdnet, dncnn, rdn, n3net, n3unet
 
 parser = argparse.ArgumentParser(description = 'Test')
 parser.add_argument('model', default='unet', type=str, help = 'model name (default: UNet)')
 parser.add_argument('--cpu', nargs='?', const=1, help = 'Use CPU')
+parser.add_argument('--flops', nargs='?', const=1, help = 'Calculate FLOPs')
 args = parser.parse_args()
 
 input_dir = './dataset/test/'
@@ -41,8 +43,18 @@ elif args.model == 'n3net':
                         nblocks=1, 
                         block_opt={'features':64, 'kernel':3, 'depth':17, 'residual':1, 'bn':0}, 
                         nl_opt={'k':4}, residual=False)
+elif args.model == 'n3unet':
+    model = n3unet.N3UNet()    
 else:
     print('Error: no support model detected!')
+    exit(1)
+
+if args.flops:
+    flops, params = profile(model, input_size=(1, 3, 512, 512))
+    print('FLOPs: {flops:.1f} G\t'
+        'Params: {params:.1f} M'.format(
+        flops=flops*1e-9,
+        params=params*1e-6))
     exit(1)
 
 checkpoint_dir = os.path.join('./checkpoint/', args.model)
@@ -99,7 +111,8 @@ for i, test_fn in enumerate(test_fns):
                     _, output = model(input_var)
                 else:
                     output = model(input_var)
-
+                    
+                torch.cuda.synchronize()
                 spend_time = time.time() - st
 
                 output_np = output.squeeze().cpu().detach().numpy()
@@ -113,15 +126,15 @@ for i, test_fn in enumerate(test_fns):
                 if i > 0:
                     stime.update(spend_time * 1000) # ms
 
-                print('PSNR: {psnr.val:.4f} ({psnr.avg:.4f})\t'
-                    'SSIM: {ssim.val:.4f} ({ssim.avg:.4f})\t'
+                print('PSNR: {psnr.val:.2f} ({psnr.avg:.2f})\t'
+                    'SSIM: {ssim.val:.3f} ({ssim.avg:.3f})\t'
                     'Time: {time.val:.2f} ({time.avg:.2f})'.format(
                     psnr=psnr,
                     ssim=ssim,
                     time=stime))
 
-print('PSNR: {psnr.avg:.4f}\t'
-    'SSIM: {ssim.avg:.4f}\t'
+print('PSNR: {psnr.avg:.2f}\t'
+    'SSIM: {ssim.avg:.3f}\t'
     'Time: {time.avg:.2f}'.format(
     psnr=psnr,
     ssim=ssim,

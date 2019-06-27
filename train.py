@@ -10,7 +10,7 @@ import glob
 import argparse
 
 from utils import *
-from model import unet, seunet, ssunet, gcunet, cbdnet, dncnn, rdn, n3net
+from model import unet, seunet, ssunet, gcunet, cbdnet, dncnn, rdn, n3net, n3unet
 
 
 def save_checkpoint(state, is_best, filename='checkpoint.pth.tar'):
@@ -63,6 +63,8 @@ elif args.model == 'n3net':
                         nblocks=1, 
                         block_opt={'features':64, 'kernel':3, 'depth':17, 'residual':1, 'bn':0}, 
                         nl_opt={'k':4}, residual=False)
+elif args.model == 'n3unet':
+    model = n3unet.N3UNet()                    
 else:
     print('Error: no support model detected!')
     exit(1)
