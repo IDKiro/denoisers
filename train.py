@@ -13,10 +13,16 @@ from utils import *
 from model import *
 
 
+parser = argparse.ArgumentParser(description = 'Train')
+parser.add_argument('model', default='unet', type=str, help = 'model name (default: UNet)')
+args = parser.parse_args()
+
+
 def save_checkpoint(state, is_best, filename='checkpoint.pth.tar'):
 	torch.save(state, os.path.join(checkpoint_dir, 'checkpoint.pth.tar'))
 	if is_best:
 		shutil.copyfile(os.path.join(checkpoint_dir, 'checkpoint.pth.tar'), os.path.join(checkpoint_dir, 'model_best.pth.tar'))
+
 
 def adjust_learning_rate(optimizer, epoch, lr_update_freq):
 	if not epoch % lr_update_freq and epoch:
@@ -25,9 +31,46 @@ def adjust_learning_rate(optimizer, epoch, lr_update_freq):
 	return optimizer
 
 
-parser = argparse.ArgumentParser(description = 'Test')
-parser.add_argument('model', default='unet', type=str, help = 'model name (default: UNet)')
-args = parser.parse_args()
+def model_def():
+    # TODO: model
+    if args.model == 'unet':
+        model = unet.UNet()
+    elif args.model == 'seunet':
+        model = seunet.SEUNet()
+    elif args.model == 'ssunet':
+        model = ssunet.SSUNet()
+    elif args.model == 'gcunet':
+        model = gcunet.GCUNet()
+    elif args.model == 'cbdnet':
+        model = cbdnet.CBDNet()
+    elif args.model == 'dncnn':
+        model = dncnn.DnCNN()
+    elif args.model == 'rdn':
+        model = rdn.RDN()
+    elif args.model == 'n3net':
+        model = n3net.N3Net(3, 3, 3,
+                            nblocks=1, 
+                            block_opt={'features':64, 'kernel':3, 'depth':17, 'residual':1, 'bn':0}, 
+                            nl_opt={'k':4}, residual=False)
+    elif args.model == 'n3unet':
+        model = n3unet.N3UNet()       
+    elif args.model == 'mobileunet':
+        model = mobileunet.MobileUNet()                 
+    else:
+        print('Error: no support model detected!')
+        exit(1)
+
+    return model
+
+def loss_def():
+    # TODO: loss
+    if args.model == 'cbdnet':
+        criterion = cbdnet.asym_loss()
+    else:
+        criterion = nn.L1Loss()
+    criterion = criterion.cuda()
+
+    return criterion
 
 ps = 512
 save_freq = 100
@@ -43,33 +86,7 @@ for i in range(len(train_fns)):
     origin_imgs[i] = []
     noise_imgs[i] = []
 
-# TODO: model
-if args.model == 'unet':
-    model = unet.UNet()
-elif args.model == 'seunet':
-    model = seunet.SEUNet()
-elif args.model == 'ssunet':
-    model = ssunet.SSUNet()
-elif args.model == 'gcunet':
-    model = gcunet.GCUNet()
-elif args.model == 'cbdnet':
-    model = cbdnet.CBDNet()
-elif args.model == 'dncnn':
-    model = dncnn.DnCNN()
-elif args.model == 'rdn':
-    model = rdn.RDN()
-elif args.model == 'n3net':
-    model = n3net.N3Net(3, 3, 3,
-                        nblocks=1, 
-                        block_opt={'features':64, 'kernel':3, 'depth':17, 'residual':1, 'bn':0}, 
-                        nl_opt={'k':4}, residual=False)
-elif args.model == 'n3unet':
-    model = n3unet.N3UNet()       
-elif args.model == 'mobileunet':
-    model = mobileunet.MobileUNet()                 
-else:
-    print('Error: no support model detected!')
-    exit(1)
+model = model_def()
 
 checkpoint_dir = os.path.join('./checkpoint/', args.model)
 result_dir = os.path.join('./result/', args.model)
@@ -91,12 +108,7 @@ else:
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
     cur_epoch = 0
 
-# TODO: loss
-if args.model == 'cbdnet':
-    criterion = cbdnet.asym_loss()
-else:
-    criterion = nn.L1Loss()
-criterion = criterion.cuda()
+criterion = loss_def()
 
 for epoch in range(cur_epoch, 2001):
     cnt=0

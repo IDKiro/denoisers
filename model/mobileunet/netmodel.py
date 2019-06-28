@@ -11,46 +11,46 @@ class MobileUNet(nn.Module):
         self.inc = inconv(3, 12)
 
         self.down1 = nn.Sequential(
-            MobileBottleneck(12, 16, 3, 2, 32, False, 'RE')
+            MobileBottleneck(12, 16, 3, 2, 32, 'RE')
         )
 
         self.down2 = nn.Sequential(
-            MobileBottleneck(16, 16, 3, 1, 16, False, 'RE'),
-            MobileBottleneck(16, 24, 3, 2, 64, False, 'RE')
+            MobileBottleneck(16, 16, 3, 1, 16, 'RE'),
+            MobileBottleneck(16, 24, 3, 2, 64, 'RE')
         )
 
         self.down3 = nn.Sequential(
-            MobileBottleneck(24, 24, 3, 1, 72, False, 'RE'),
-            MobileBottleneck(24, 40, 5, 2, 72, True, 'RE')
+            MobileBottleneck(24, 24, 3, 1, 72, 'RE'),
+            MobileBottleneck(24, 40, 5, 2, 72, 'RE')
         )
 
         self.down4 = nn.Sequential(
-            MobileBottleneck(40, 40, 5, 1, 120, True, 'RE'),
-            MobileBottleneck(40, 40, 5, 1, 120, True, 'RE'),
-            MobileBottleneck(40, 80, 3, 2, 240, False, 'HS')
+            MobileBottleneck(40, 40, 5, 1, 120, 'RE'),
+            MobileBottleneck(40, 40, 5, 1, 120, 'RE'),
+            MobileBottleneck(40, 80, 3, 2, 240, 'HS')
         )
 
         self.bneck5 = nn.Sequential(
-            MobileBottleneck(80, 80, 3, 1, 200, False, 'HS'),
-            MobileBottleneck(80, 80, 3, 1, 184, False, 'HS'),
-            MobileBottleneck(80, 80, 3, 1, 184, False, 'HS'),
-            MobileBottleneck(80, 80, 3, 1, 200, False, 'HS')
+            MobileBottleneck(80, 80, 3, 1, 200, 'HS'),
+            MobileBottleneck(80, 80, 3, 1, 184, 'HS'),
+            MobileBottleneck(80, 80, 3, 1, 184, 'HS'),
+            MobileBottleneck(80, 80, 3, 1, 200, 'HS')
         )
 
         self.up1 = up(80, 40)
         self.bneck6 = nn.Sequential(
-            MobileBottleneck(40, 40, 5, 1, 120, True, 'RE'),
-            MobileBottleneck(40, 40, 5, 1, 120, True, 'RE')
+            MobileBottleneck(40, 40, 5, 1, 120, 'RE'),
+            MobileBottleneck(40, 40, 5, 1, 120, 'RE')
         )
 
         self.up2 = up(40, 24)
         self.bneck7 = nn.Sequential(
-            MobileBottleneck(24, 24, 3, 1, 72, False, 'RE')
+            MobileBottleneck(24, 24, 3, 1, 72, 'RE')
         )
 
         self.up3 = up(24, 16)
         self.bneck8 = nn.Sequential(
-            MobileBottleneck(16, 16, 3, 1, 16, False, 'RE')
+            MobileBottleneck(16, 16, 3, 1, 16, 'RE')
         )
 
         self.up4 = up(16, 12)

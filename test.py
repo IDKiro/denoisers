@@ -14,42 +14,60 @@ import argparse
 from utils import *
 from model import *
 
+
 parser = argparse.ArgumentParser(description = 'Test')
 parser.add_argument('model', default='unet', type=str, help = 'model name (default: UNet)')
 parser.add_argument('--cpu', nargs='?', const=1, help = 'Use CPU')
 parser.add_argument('--flops', nargs='?', const=1, help = 'Calculate FLOPs')
+parser.add_argument('--fps', nargs='?', const=1, help = 'Measure FPS')
 args = parser.parse_args()
+
+def run(input_var):
+    # TODO: output
+    if args.model == 'cbdnet':
+        _, output = model(input_var)
+    else:
+        output = model(input_var)
+
+    return output
+
+
+def model_def():
+    # TODO: model
+    if args.model == 'unet':
+        model = unet.UNet()
+    elif args.model == 'seunet':
+        model = seunet.SEUNet()
+    elif args.model == 'ssunet':
+        model = ssunet.SSUNet()
+    elif args.model == 'gcunet':
+        model = gcunet.GCUNet()
+    elif args.model == 'cbdnet':
+        model = cbdnet.CBDNet()
+    elif args.model == 'dncnn':
+        model = dncnn.DnCNN()
+    elif args.model == 'rdn':
+        model = rdn.RDN()
+    elif args.model == 'n3net':
+        model = n3net.N3Net(3, 3, 3,
+                            nblocks=1, 
+                            block_opt={'features':64, 'kernel':3, 'depth':17, 'residual':1, 'bn':0}, 
+                            nl_opt={'k':4}, residual=False)
+    elif args.model == 'n3unet':
+        model = n3unet.N3UNet()    
+    elif args.model == 'mobileunet':
+        model = mobileunet.MobileUNet()   
+    else:
+        print('Error: no support model detected!')
+        exit(1)
+
+    return model
+
 
 input_dir = './dataset/test/'
 test_fns = glob.glob(input_dir + 'Batch_*')
 
-# TODO: model
-if args.model == 'unet':
-    model = unet.UNet()
-elif args.model == 'seunet':
-    model = seunet.SEUNet()
-elif args.model == 'ssunet':
-    model = ssunet.SSUNet()
-elif args.model == 'gcunet':
-    model = gcunet.GCUNet()
-elif args.model == 'cbdnet':
-    model = cbdnet.CBDNet()
-elif args.model == 'dncnn':
-    model = dncnn.DnCNN()
-elif args.model == 'rdn':
-    model = rdn.RDN()
-elif args.model == 'n3net':
-    model = n3net.N3Net(3, 3, 3,
-                        nblocks=1, 
-                        block_opt={'features':64, 'kernel':3, 'depth':17, 'residual':1, 'bn':0}, 
-                        nl_opt={'k':4}, residual=False)
-elif args.model == 'n3unet':
-    model = n3unet.N3UNet()    
-elif args.model == 'mobileunet':
-    model = mobileunet.MobileUNet()   
-else:
-    print('Error: no support model detected!')
-    exit(1)
+model = model_def()
 
 if args.flops:
     flops, params = profile(model, input_size=(1, 3, 512, 512))
@@ -76,8 +94,32 @@ else:
     print('Error: no trained model detected!')
     exit(1)
 
-
 model.eval()
+
+if args.fps:
+    test_img = hwc_to_chw(
+        read_img(glob.glob(test_fns[0] + '/*Reference.bmp')[0])[0:512, 0:512, :]
+    )
+
+    input_var = torch.autograd.Variable(
+        torch.from_numpy(test_img.copy()).type(torch.FloatTensor).unsqueeze(0)
+        )
+    
+    if not args.cpu:
+        input_var = input_var.cuda()
+
+    ITER = 1000
+
+    output = run(input_var)
+
+    st = time.time()
+    for _ in range(ITER):
+        output = run(input_var)
+
+    print('FPS: {fps:.1f}'.format(
+    fps=ITER / (time.time()-st)))
+    exit(1)
+
 
 psnr = AverageMeter()
 ssim = AverageMeter()
@@ -108,11 +150,7 @@ for i, test_fn in enumerate(test_fns):
 
                 st = time.time()
 
-                # TODO: output
-                if args.model == 'cbdnet':
-                    _, output = model(input_var)
-                else:
-                    output = model(input_var)
+                output = run(input_var)
                     
                 torch.cuda.synchronize()
                 spend_time = time.time() - st
