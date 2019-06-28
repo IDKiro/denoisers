@@ -12,7 +12,7 @@ import glob
 import argparse
 
 from utils import *
-from model import unet, seunet, ssunet, gcunet, cbdnet, dncnn, rdn, n3net, n3unet
+from model import *
 
 parser = argparse.ArgumentParser(description = 'Test')
 parser.add_argument('model', default='unet', type=str, help = 'model name (default: UNet)')
@@ -45,6 +45,8 @@ elif args.model == 'n3net':
                         nl_opt={'k':4}, residual=False)
 elif args.model == 'n3unet':
     model = n3unet.N3UNet()    
+elif args.model == 'mobileunet':
+    model = mobileunet.MobileUNet()   
 else:
     print('Error: no support model detected!')
     exit(1)
