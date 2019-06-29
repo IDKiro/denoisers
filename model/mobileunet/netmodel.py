@@ -8,10 +8,10 @@ from .mobile import MobileBottleneck, Hswish
 class MobileUNet(nn.Module):
     def __init__(self):
         super(MobileUNet, self).__init__()
-        self.inc = inconv(3, 12)
+        self.inc = inconv(3, 32)
 
         self.down1 = nn.Sequential(
-            MobileBottleneck(12, 16, 3, 2, 32, 'RE')
+            MobileBottleneck(32, 16, 3, 2, 32, 'RE')
         )
 
         self.down2 = nn.Sequential(
@@ -53,8 +53,8 @@ class MobileUNet(nn.Module):
             MobileBottleneck(16, 16, 3, 1, 16, 'RE')
         )
 
-        self.up4 = up(16, 12)
-        self.outc = outconv(12, 3)
+        self.up4 = up(16, 32)
+        self.outc = outconv(32, 3)
 
     def forward(self, x):
         inx = self.inc(x)
@@ -126,6 +126,4 @@ class up(nn.Module):
 
         x = x2 + x1
         return x
-
-
 

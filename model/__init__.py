@@ -8,5 +8,6 @@ __all__ = [
     'unet', 
     'n3net', 
     'n3unet', 
-    'mobileunet'
+    'mobileunet',
+    'durbnet'
     ]

@@ -11,6 +11,7 @@ import argparse
 
 from utils import *
 from model import *
+from setting import model_def, loss_def
 
 
 parser = argparse.ArgumentParser(description = 'Train')
@@ -31,46 +32,19 @@ def adjust_learning_rate(optimizer, epoch, lr_update_freq):
 	return optimizer
 
 
-def model_def():
-    # TODO: model
-    if args.model == 'unet':
-        model = unet.UNet()
-    elif args.model == 'seunet':
-        model = seunet.SEUNet()
-    elif args.model == 'ssunet':
-        model = ssunet.SSUNet()
-    elif args.model == 'gcunet':
-        model = gcunet.GCUNet()
-    elif args.model == 'cbdnet':
-        model = cbdnet.CBDNet()
-    elif args.model == 'dncnn':
-        model = dncnn.DnCNN()
-    elif args.model == 'rdn':
-        model = rdn.RDN()
-    elif args.model == 'n3net':
-        model = n3net.N3Net(3, 3, 3,
-                            nblocks=1, 
-                            block_opt={'features':64, 'kernel':3, 'depth':17, 'residual':1, 'bn':0}, 
-                            nl_opt={'k':4}, residual=False)
-    elif args.model == 'n3unet':
-        model = n3unet.N3UNet()       
-    elif args.model == 'mobileunet':
-        model = mobileunet.MobileUNet()                 
-    else:
-        print('Error: no support model detected!')
-        exit(1)
+def data_augment(temp_origin_img, temp_noise_img):
+    if np.random.randint(2, size=1)[0] == 1:
+        temp_origin_img = np.flip(temp_origin_img, axis=1)
+        temp_noise_img = np.flip(temp_noise_img, axis=1)
+    if np.random.randint(2, size=1)[0] == 1: 
+        temp_origin_img = np.flip(temp_origin_img, axis=0)
+        temp_noise_img = np.flip(temp_noise_img, axis=0)
+    if np.random.randint(2, size=1)[0] == 1:
+        temp_origin_img = np.transpose(temp_origin_img, (1, 0, 2))
+        temp_noise_img = np.transpose(temp_noise_img, (1, 0, 2))
+    
+    return temp_origin_img, temp_noise_img
 
-    return model
-
-def loss_def():
-    # TODO: loss
-    if args.model == 'cbdnet':
-        criterion = cbdnet.asym_loss()
-    else:
-        criterion = nn.L1Loss()
-    criterion = criterion.cuda()
-
-    return criterion
 
 ps = 512
 save_freq = 100
@@ -86,7 +60,7 @@ for i in range(len(train_fns)):
     origin_imgs[i] = []
     noise_imgs[i] = []
 
-model = model_def()
+model = model_def(args.model)
 
 checkpoint_dir = os.path.join('./checkpoint/', args.model)
 result_dir = os.path.join('./result/', args.model)
@@ -108,7 +82,7 @@ else:
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
     cur_epoch = 0
 
-criterion = loss_def()
+criterion = loss_def(args.model)
 
 for epoch in range(cur_epoch, 2001):
     cnt=0

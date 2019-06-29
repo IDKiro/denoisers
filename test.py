@@ -13,6 +13,7 @@ import argparse
 
 from utils import *
 from model import *
+from setting import model_def
 
 
 parser = argparse.ArgumentParser(description = 'Test')
@@ -32,42 +33,10 @@ def run(input_var):
     return output
 
 
-def model_def():
-    # TODO: model
-    if args.model == 'unet':
-        model = unet.UNet()
-    elif args.model == 'seunet':
-        model = seunet.SEUNet()
-    elif args.model == 'ssunet':
-        model = ssunet.SSUNet()
-    elif args.model == 'gcunet':
-        model = gcunet.GCUNet()
-    elif args.model == 'cbdnet':
-        model = cbdnet.CBDNet()
-    elif args.model == 'dncnn':
-        model = dncnn.DnCNN()
-    elif args.model == 'rdn':
-        model = rdn.RDN()
-    elif args.model == 'n3net':
-        model = n3net.N3Net(3, 3, 3,
-                            nblocks=1, 
-                            block_opt={'features':64, 'kernel':3, 'depth':17, 'residual':1, 'bn':0}, 
-                            nl_opt={'k':4}, residual=False)
-    elif args.model == 'n3unet':
-        model = n3unet.N3UNet()    
-    elif args.model == 'mobileunet':
-        model = mobileunet.MobileUNet()   
-    else:
-        print('Error: no support model detected!')
-        exit(1)
-
-    return model
-
-
 input_dir = './dataset/test/'
 test_fns = glob.glob(input_dir + 'Batch_*')
 
-model = model_def()
+model = model_def(args.model)
 
 if args.flops:
     flops, params = profile(model, input_size=(1, 3, 512, 512))
