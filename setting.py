@@ -22,15 +22,15 @@ def model_def(model_name):
         model = n3net.N3Net(3, 3, 3,
                             nblocks=1, 
                             block_opt={'features':64, 'kernel':3, 'depth':17, 'residual':1, 'bn':0}, 
-                            nl_opt={'k':4}, residual=False)
-    elif model_name == 'n3unet':
-        model = n3unet.N3UNet()       
+                            nl_opt={'k':4}, residual=False)   
     elif model_name == 'mobileunet':
         model = mobileunet.MobileUNet()                 
     elif model_name == 'nmunet':
         model = nmunet.NMUNet() 
     elif model_name == 'durbnet':
         model = durbnet.DuRBNet() 
+    elif model_name == 'memnet':
+        model = memnet.MemNet() 
     else:
         print('Error: no support model detected!')
         exit(1)

@@ -7,7 +7,7 @@ __all__ = [
     'ssunet', 
     'unet', 
     'n3net', 
-    'n3unet', 
     'mobileunet',
-    'durbnet'
+    'durbnet',
+    'memnet'
     ]
