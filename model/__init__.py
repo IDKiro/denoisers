@@ -10,5 +10,6 @@ __all__ = [
     'mobileunet',
     'durbnet',
     'memnet',
-    'rednet'
+    'rednet',
+    'carn'
     ]

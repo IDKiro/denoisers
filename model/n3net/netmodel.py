@@ -59,7 +59,7 @@ class DnCNN(nn.Module):
         for i in range(depth-2):
             layers += [convnxn(features, features, kernel),
                        nn.BatchNorm2d(features)  if bn else nn.Sequential(),
-                       self.relu]
+                       nn.ReLU(inplace=True)]
         self.layer1 = nn.Sequential(*layers)
         self.conv2 = convnxn(features , nplanes_out, kernelsize=kernel, bias=True)
 
