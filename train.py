@@ -16,6 +16,8 @@ from setting import model_def, loss_def
 
 parser = argparse.ArgumentParser(description = 'Train')
 parser.add_argument('model', default='unet', type=str, help = 'model name (default: UNet)')
+parser.add_argument('-lr', default=1e-4, type=float, help = 'learning rate')
+parser.add_argument('-epochs', default=2000, type=int, help = 'sum of epochs')
 args = parser.parse_args()
 
 
@@ -79,12 +81,12 @@ else:
     if not os.path.isdir(checkpoint_dir):
         os.makedirs(checkpoint_dir)
     # create model
-    optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
+    optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
     cur_epoch = 0
 
 criterion = loss_def(args.model)
 
-for epoch in range(cur_epoch, 2001):
+for epoch in range(cur_epoch, args.epochs + 1):
     cnt=0
     losses = AverageMeter()
     optimizer = adjust_learning_rate(optimizer, epoch, lr_update_freq)

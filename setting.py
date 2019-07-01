@@ -31,6 +31,8 @@ def model_def(model_name):
         model = durbnet.DuRBNet() 
     elif model_name == 'memnet':
         model = memnet.MemNet() 
+    elif model_name == 'rednet':
+        model = rednet.REDNet() 
     else:
         print('Error: no support model detected!')
         exit(1)

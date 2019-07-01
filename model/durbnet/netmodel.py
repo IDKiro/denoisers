@@ -68,26 +68,3 @@ class outconv(nn.Module):
     def forward(self, x):
         x = self.conv(x)
         return x
-
-
-class up(nn.Module):
-    def __init__(self, in_ch, out_ch):
-        super(up, self).__init__()
-        self.up = nn.Sequential(
-            nn.Conv2d(in_ch, out_ch * 4, (3, 3), (1, 1), (1, 1)),
-            nn.PixelShuffle(2)
-        )
-
-    def forward(self, x1, x2):
-        x1 = self.up(x1)
-        
-        # input is CHW
-        diffY = x2.size()[2] - x1.size()[2]
-        diffX = x2.size()[3] - x1.size()[3]
-
-        x1 = F.pad(x1, (diffX // 2, diffX - diffX//2,
-                        diffY // 2, diffY - diffY//2))
-
-        x = x2 + x1
-        return x
-
