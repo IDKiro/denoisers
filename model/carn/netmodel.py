@@ -29,7 +29,7 @@ class Block(nn.Module):
         b3 = self.b3(o2)
         c3 = torch.cat([c2, b3], dim=1)
         o3 = self.c3(c3)
-
+        
         return o3
         
 

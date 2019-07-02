@@ -1,6 +1,7 @@
 from __future__ import division
 from __future__ import print_function
 import os, time, scipy.io, shutil
+from progress.bar import Bar
 import torch
 import torch.nn as nn
 from torch.autograd import Variable
@@ -25,12 +26,13 @@ args = parser.parse_args()
 
 def run(input_var):
     # TODO: output
-    if args.model == 'cbdnet':
-        _, output = model(input_var)
-    else:
-        output = model(input_var)
+    with torch.no_grad():
+        if args.model == 'cbdnet':
+            _, output = model(input_var)
+        else:
+            output = model(input_var)
 
-    return output
+        return output
 
 
 input_dir = './dataset/test/'
@@ -81,9 +83,11 @@ if args.fps:
 
     output = run(input_var)
 
+    bar = Bar('Testing:', max=ITER)
     st = time.time()
     for _ in range(ITER):
         output = run(input_var)
+        bar.next()
 
     print('FPS: {fps:.1f}'.format(
     fps=ITER / (time.time()-st)))
@@ -92,7 +96,6 @@ if args.fps:
 
 psnr = AverageMeter()
 ssim = AverageMeter()
-stime = AverageMeter()
 
 for i, test_fn in enumerate(test_fns):
     test_origin_fns = glob.glob(test_fn + '/*Reference.bmp')
@@ -117,12 +120,7 @@ for i, test_fn in enumerate(test_fns):
                 if not args.cpu:
                     input_var = input_var.cuda()
 
-                st = time.time()
-
                 output = run(input_var)
-                    
-                torch.cuda.synchronize()
-                spend_time = time.time() - st
 
                 output_np = output.squeeze().cpu().detach().numpy()
                 output_np = chw_to_hwc(np.clip(output_np, 0, 1))
@@ -132,19 +130,13 @@ for i, test_fn in enumerate(test_fns):
                 
                 psnr.update(test_psnr)
                 ssim.update(test_ssim)
-                if i > 0:
-                    stime.update(spend_time * 1000) # ms
 
                 print('PSNR: {psnr.val:.2f} ({psnr.avg:.2f})\t'
-                    'SSIM: {ssim.val:.3f} ({ssim.avg:.3f})\t'
-                    'Time: {time.val:.2f} ({time.avg:.2f})'.format(
+                    'SSIM: {ssim.val:.3f} ({ssim.avg:.3f})'.format(
                     psnr=psnr,
-                    ssim=ssim,
-                    time=stime))
+                    ssim=ssim))
 
 print('PSNR: {psnr.avg:.2f}\t'
-    'SSIM: {ssim.avg:.3f}\t'
-    'Time: {time.avg:.2f}'.format(
+    'SSIM: {ssim.avg:.3f}'.format(
     psnr=psnr,
-    ssim=ssim,
-    time=stime))
+    ssim=ssim))
