@@ -35,6 +35,8 @@ def model_def(model_name):
         model = rednet.REDNet() 
     elif model_name == 'carn':
         model = carn.CARN() 
+    elif model_name == 'snunet':
+        model = snunet.SNUNet() 
     else:
         print('Error: no support model detected!')
         exit(1)

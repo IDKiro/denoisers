@@ -1,7 +1,6 @@
 from __future__ import division
 from __future__ import print_function
 import os, time, scipy.io, shutil
-from progress.bar import Bar
 import torch
 import torch.nn as nn
 from torch.autograd import Variable
@@ -83,11 +82,10 @@ if args.fps:
 
     output = run(input_var)
 
-    bar = Bar('Testing:', max=ITER)
+    print('Testing...')
     st = time.time()
     for _ in range(ITER):
         output = run(input_var)
-        bar.next()
 
     print('FPS: {fps:.1f}'.format(
     fps=ITER / (time.time()-st)))

@@ -11,5 +11,6 @@ __all__ = [
     'durbnet',
     'memnet',
     'rednet',
-    'carn'
+    'carn',
+    'snunet'
     ]
