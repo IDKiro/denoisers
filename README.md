@@ -26,7 +26,7 @@ Pretrained model and dataset: [[OneDrive](https://zjueducn-my.sharepoint.com/:f:
 | DuRB-P   | 32.77 | 0.691 |   220.7   |    0.8     |  7.4  |
 | MemNet-3 | 34.70 | 0.775 |   193.8   |    0.7     |  9.0  |
 | REDNet   | 39.49 | 0.915 |   184.9   |    0.7     | 14.2  |
-| CARN     |       |       |   272.0   |    0.8     |       |
+| CARN     | 39.24 | 0.913 |   272.0   |    0.8     |  7.6  |
 
 ### UNet
 
@@ -39,4 +39,4 @@ Pretrained model and dataset: [[OneDrive](https://zjueducn-my.sharepoint.com/:f:
 | SE-UNet     | 38.27 | 0.915 |   60.0    |    7.8     | 16.6  |
 | GC-UNet     | 38.13 | 0.914 |   60.1    |    8.6     | 30.8  |
 | Mobile-UNet | 30.44 | 0.630 |    3.5    |    0.4     | 54.9  |
-| SN-UNet     |       |       |   46.3    |    3.5     |       |
+| SN-UNet     | 36.95 | 0.883 |   46.3    |    3.5     | 38.9  |
