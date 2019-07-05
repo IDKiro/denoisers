@@ -3,20 +3,19 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from .durb import DuRB
+from .durb import Block
 
-class DuRBNet(nn.Module):
+class DuRB(nn.Module):
     def __init__(self):
-        super(DuRBNet, self).__init__()
+        super(DuRB, self).__init__()
         self.inc = inconv(3, 32)
 
-        self.durb1 = DuRB(32, 5, 3, 1, 1)
-        self.durb2 = DuRB(32, 7, 5, 1, 1)
-        self.durb3 = DuRB(32, 7, 5, 2, 1)
-        self.durb4 = DuRB(32, 11, 7, 2, 1)
-        self.durb5 = DuRB(32, 11, 5, 1, 1)
-        self.durb6 = DuRB(32, 11, 7, 3, 1)
-
+        self.durb1 = Block(32, 5, 3, 1, 1)
+        self.durb2 = Block(32, 7, 5, 1, 1)
+        self.durb3 = Block(32, 7, 5, 2, 1)
+        self.durb4 = Block(32, 11, 7, 2, 1)
+        self.durb5 = Block(32, 11, 5, 1, 1)
+        self.durb6 = Block(32, 11, 7, 3, 1)
 
         self.outc = outconv(32, 3)
 

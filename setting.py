@@ -27,14 +27,16 @@ def model_def(model_name):
         model = mobileunet.MobileUNet()                 
     elif model_name == 'nmunet':
         model = nmunet.NMUNet() 
-    elif model_name == 'durbnet':
-        model = durbnet.DuRBNet() 
+    elif model_name == 'durb':
+        model = durb.DuRB() 
     elif model_name == 'memnet':
         model = memnet.MemNet() 
     elif model_name == 'rednet':
         model = rednet.REDNet() 
     elif model_name == 'carn':
         model = carn.CARN() 
+    elif model_name == 'carnm':
+        model = carnm.CARNM() 
     elif model_name == 'snunet':
         model = snunet.SNUNet() 
     else:
