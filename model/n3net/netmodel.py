@@ -193,7 +193,7 @@ class N3Net(nn.Module):
     r"""
     A N3Net interleaves DnCNNS for local processing with N3Blocks for non-local processing
     """
-    def __init__(self, nplanes_in, nplanes_out, nplanes_interm, nblocks, block_opt, nl_opt, residual=False):
+    def __init__(self, nplanes_in=3, nplanes_out=3, nplanes_interm=3, nblocks=2, block_opt={'features':64, 'kernel':3, 'depth':17, 'residual':1, 'bn':0}, nl_opt={'k':4}, residual=False):
         r"""
         :param nplanes_in: number of input features
         :param nplanes_out: number of output features

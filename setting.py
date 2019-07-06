@@ -21,10 +21,7 @@ def model_def(model_name):
     elif model_name == 'rdn':
         model = rdn.RDN()
     elif model_name == 'n3net':
-        model = n3net.N3Net(3, 3, 3,
-                            nblocks=1, 
-                            block_opt={'features':64, 'kernel':3, 'depth':17, 'residual':1, 'bn':0}, 
-                            nl_opt={'k':4}, residual=False)   
+        model = n3net.N3Net()   
     elif model_name == 'mobileunet':
         model = mobileunet.MobileUNet()                 
     elif model_name == 'nmunet':
