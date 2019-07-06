@@ -6,7 +6,7 @@ from torch.autograd import Variable
 
 
 class MemNet(nn.Module):
-    def __init__(self, in_channels=3, channels=64, num_memblock=3, num_resblock=3):
+    def __init__(self, in_channels=3, channels=64, num_memblock=6, num_resblock=6):
         super(MemNet, self).__init__()
         self.feature_extractor = BNReLUConv(in_channels, channels)
         self.reconstructor = BNReLUConv(channels, in_channels)

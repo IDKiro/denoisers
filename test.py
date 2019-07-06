@@ -21,6 +21,7 @@ parser.add_argument('model', default='unet', type=str, help = 'model name (defau
 parser.add_argument('--cpu', nargs='?', const=1, help = 'Use CPU')
 parser.add_argument('--flops', nargs='?', const=1, help = 'Calculate FLOPs')
 parser.add_argument('--fps', nargs='?', const=1, help = 'Measure FPS')
+parser.add_argument('-ps', default=512, type=int, help = 'patch size')
 args = parser.parse_args()
 
 def run(input_var):
@@ -37,10 +38,12 @@ def run(input_var):
 input_dir = './dataset/test/'
 test_fns = glob.glob(input_dir + 'Batch_*')
 
+ps = args.ps
+
 model = model_def(args.model)
 
 if args.flops:
-    flops, params = profile(model, input_size=(1, 3, 512, 512))
+    flops, params = profile(model, input_size=(1, 3, ps, ps))
     print('FLOPs: {flops:.1f} G\t'
         'Params: {params:.1f} M'.format(
         flops=flops*1e-9,
@@ -68,7 +71,7 @@ model.eval()
 
 if args.fps:
     test_img = hwc_to_chw(
-        read_img(glob.glob(test_fns[0] + '/*Reference.bmp')[0])[0:512, 0:512, :]
+        read_img(glob.glob(test_fns[0] + '/*Reference.bmp')[0])[0:ps, 0:ps, :]
     )
 
     input_var = torch.autograd.Variable(
@@ -106,8 +109,8 @@ for i, test_fn in enumerate(test_fns):
 
         for ix in range(0, 8, 2):
             for iy in range(0, 4, 2):
-                temp_origin_img = origin_img[512*ix:512*(ix+1), 512*iy:512*(iy+1), :]
-                temp_noise_img = noise_img[512*ix:512*(ix+1), 512*iy:512*(iy+1), :]
+                temp_origin_img = origin_img[ps*ix:ps*(ix+1), ps*iy:ps*(iy+1), :]
+                temp_noise_img = noise_img[ps*ix:ps*(ix+1), ps*iy:ps*(iy+1), :]
 
                 temp_noise_img_chw = hwc_to_chw(temp_noise_img)
 

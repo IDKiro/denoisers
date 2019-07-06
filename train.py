@@ -16,8 +16,10 @@ from setting import model_def, loss_def
 
 parser = argparse.ArgumentParser(description = 'Train')
 parser.add_argument('model', default='unet', type=str, help = 'model name (default: UNet)')
+parser.add_argument('-ps', default=512, type=int, help = 'patch size')
 parser.add_argument('-lr', default=1e-4, type=float, help = 'learning rate')
 parser.add_argument('-epochs', default=2000, type=int, help = 'sum of epochs')
+parser.add_argument('-freq', default=1000, type=int, help = 'learning rate update frequency')
 args = parser.parse_args()
 
 
@@ -48,9 +50,9 @@ def data_augment(temp_origin_img, temp_noise_img):
     return temp_origin_img, temp_noise_img
 
 
-ps = 512
+ps = args.ps
 save_freq = 100
-lr_update_freq = 1000
+lr_update_freq = args.freq
 
 input_dir = './dataset/train/'
 train_fns = glob.glob(input_dir + 'Batch_*')

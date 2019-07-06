@@ -6,6 +6,8 @@ def model_def(model_name):
     # TODO: model
     if model_name == 'unet':
         model = unet.UNet()
+    elif model_name == 'unets':
+        model = unets.UNetS()
     elif model_name == 'seunet':
         model = seunet.SEUNet()
     elif model_name == 'ssunet':

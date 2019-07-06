@@ -4,19 +4,19 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
-class UNet(nn.Module):
+class UNetS(nn.Module):
     def __init__(self):
-        super(UNet, self).__init__()
-        self.inc = inconv(3, 64)
-        self.down1 = down(64, 128)
-        self.down2 = down(128, 256)
-        self.down3 = down(256, 512)
-        self.down4 = down(512, 1024)
-        self.up1 = up(1024, 512)
-        self.up2 = up(512, 256)
-        self.up3 = up(256, 128)
-        self.up4 = up(128, 64)
-        self.outc = outconv(64, 3)
+        super(UNetS, self).__init__()
+        self.inc = inconv(3, 32)
+        self.down1 = down(32, 64)
+        self.down2 = down(64, 128)
+        self.down3 = down(128, 256)
+        self.down4 = down(256, 512)
+        self.up1 = up(512, 256)
+        self.up2 = up(256, 128)
+        self.up3 = up(128, 64)
+        self.up4 = up(64, 32)
+        self.outc = outconv(32, 3)
 
     def forward(self, x):
         inc = self.inc(x)
