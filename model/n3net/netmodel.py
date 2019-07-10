@@ -182,6 +182,9 @@ class N3Block(nn.Module):
             log_temp = None
 
         x = self.n3aggregation(xg,xe,ye,log_temp=log_temp)
+
+        # x = x.repeat(1, self.k + 1, 1, 1)     # test flops
+
         return x
 
     def reset_parameters(self):

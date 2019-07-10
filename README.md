@@ -16,18 +16,17 @@ Pretrained model and dataset: [[OneDrive](https://zjueducn-my.sharepoint.com/:f:
 - REDNet: [[Paper](https://arxiv.org/abs/1603.09056)]
 - CARN & CARNM: [[GitHub](https://github.com/nmhkahn/CARN-pytorch)][[Paper](https://arxiv.org/abs/1810.05052v1)]
 
-| Method   | PSNR  | SSIM  | FLOPs / G | Params / M |  FPS  |
-| -------- | :---: | :---: | :-------: | :--------: | :---: |
-| DnCNN    | 39.31 | 0.913 |   146.2   |    0.6     | 24.2  |
-| UNet     | 39.31 | 0.915 |   239.2   |    31.0    | 16.6  |
-| UNet-S   | 38.39 | 0.916 |   60.0    |    7.8     | 46.6  |
-| REDNet   | 39.49 | 0.915 |   184.9   |    0.7     | 14.2  |
-| MemNet-6 |       |       |   768.8   |    2.9     |       |
-| RDN-1    | 39.56 | 0.916 |   334.1   |    1.1     |  7.3  |
-| N3Net-2  |       |       |  *292.4*  |   *1.2*    |       |
-| CBDNet   | 39.26 | 0.913 |   172.0   |    4.3     | 19.7  |
-| CARN     | 39.24 | 0.913 |   272.0   |    0.8     |  7.6  |
-| CARNM    | 39.23 | 0.913 |   149.5   |    0.4     |  6.6  |
+| Method  | PSNR  | SSIM  | FLOPs / G | Params / M |  FPS  |
+| ------- | :---: | :---: | :-------: | :--------: | :---: |
+| DnCNN   | 39.31 | 0.913 |   146.2   |    0.6     | 24.2  |
+| UNet    | 39.31 | 0.915 |   239.2   |    31.0    | 16.6  |
+| UNet-S  | 38.39 | 0.916 |   60.0    |    7.8     | 46.6  |
+| REDNet  | 39.49 | 0.915 |   184.9   |    0.7     | 14.2  |
+| RDN-1   | 39.56 | 0.916 |   334.1   |    1.1     |  7.3  |
+| N3Net-2 | 39.56 | 0.914 |  *294.5*  |   *1.1*    | *0.2* |
+| CBDNet  | 39.26 | 0.913 |   172.0   |    4.3     | 19.7  |
+| CARN    | 39.24 | 0.913 |   272.0   |    0.8     |  7.6  |
+| CARNM   | 39.23 | 0.913 |   149.5   |    0.4     |  6.6  |
 
 ### Bad Results
 
@@ -39,6 +38,7 @@ Pretrained model and dataset: [[OneDrive](https://zjueducn-my.sharepoint.com/:f:
 | DuRB-P      | 32.77 | 0.691 |   220.7   |    0.8     |  7.4  |
 | DuRB-P-ReLu | 34.27 | 0.749 |   220.9   |    0.8     |  7.0  |
 | MemNet-3    | 34.70 | 0.775 |   193.8   |    0.7     |  9.0  |
+| MemNet-6    | 33.56 | 0.718 |   768.8   |    2.9     |  2.2  |
 
 ### Expansion
 
