@@ -1,19 +1,19 @@
 from __future__ import division
 from __future__ import print_function
 import os, time, scipy.io, shutil
+import numpy as np
+import glob
+import argparse
+import importlib
 import torch
 import torch.nn as nn
 from torch.autograd import Variable
 import torch.nn.functional as F
-from skimage.measure import compare_psnr, compare_ssim
 from thop import profile
-import numpy as np
-import glob
-import argparse
+from skimage.measure import compare_psnr, compare_ssim
 
 from utils import *
 from model import *
-from setting import model_def
 
 
 parser = argparse.ArgumentParser(description = 'Test')
@@ -23,6 +23,7 @@ parser.add_argument('--flops', nargs='?', const=1, help = 'Calculate FLOPs')
 parser.add_argument('--fps', nargs='?', const=1, help = 'Measure FPS')
 parser.add_argument('-ps', default=512, type=int, help = 'patch size')
 args = parser.parse_args()
+
 
 def run(input_var):
     # TODO: output
@@ -40,10 +41,13 @@ test_fns = glob.glob(input_dir + 'Batch_*')
 
 ps = args.ps
 
-model = model_def(args.model)
+model = importlib.import_module('.' + args.model, package='model').Network()
 
 if args.flops:
-    flops, params = profile(model, input_size=(1, 3, ps, ps))
+    if not args.cpu:
+        flops, params = profile(model, input_size=(1, 3, ps, ps), device='cuda')
+    else:
+        flops, params = profile(model, input_size=(1, 3, ps, ps))
     print('FLOPs: {flops:.1f} G\t'
         'Params: {params:.1f} M'.format(
         flops=flops*1e-9,
@@ -107,8 +111,8 @@ for i, test_fn in enumerate(test_fns):
     for test_noise_fn in test_noise_fns:
         noise_img = read_img(test_noise_fn)
 
-        for ix in range(0, 8, 2):
-            for iy in range(0, 4, 2):
+        for iy in range(0, 8, 2):
+            for ix in range(0, 4, 2):
                 temp_origin_img = origin_img[ps*ix:ps*(ix+1), ps*iy:ps*(iy+1), :]
                 temp_noise_img = noise_img[ps*ix:ps*(ix+1), ps*iy:ps*(iy+1), :]
 

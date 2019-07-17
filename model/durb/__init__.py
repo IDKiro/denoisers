@@ -1,1 +1,1 @@
-from .netmodel import DuRB
+from .netmodel import Network

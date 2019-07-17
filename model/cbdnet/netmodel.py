@@ -25,9 +25,9 @@ class asym_loss(nn.Module):
     def _tensor_size(self,t):
         return t.size()[1]*t.size()[2]*t.size()[3]
 
-class CBDNet(nn.Module):
+class Network(nn.Module):
     def __init__(self):
-        super(CBDNet, self).__init__()
+        super(Network, self).__init__()
         self.fcn = FCN()
         self.unet = UNet()
     

@@ -5,9 +5,9 @@ import torch.nn.functional as F
 from mmcv.cnn import constant_init, kaiming_init
 
 
-class GCUNet(nn.Module):
+class Network(nn.Module):
     def __init__(self):
-        super(GCUNet, self).__init__()
+        super(Network, self).__init__()
         self.inc = inconv(3, 32)
         self.gc1 = ContextBlock2d(32, 32, 'att', ['channel_mul'])
         self.down1 = down(32, 64)

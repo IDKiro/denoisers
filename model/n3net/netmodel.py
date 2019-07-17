@@ -192,7 +192,7 @@ class N3Block(nn.Module):
             if isinstance(m, (nn.BatchNorm2d)):
                 dncnn_batchnorm_init(m, kernelsize=3, b_min=0.025)
 
-class N3Net(nn.Module):
+class Network(nn.Module):
     r"""
     A N3Net interleaves DnCNNS for local processing with N3Blocks for non-local processing
     """
@@ -206,7 +206,7 @@ class N3Net(nn.Module):
         :param nl_opt: options passed to N3Blocks
         :param residual: whether to have a global skip connection
         """
-        super(N3Net, self).__init__()
+        super(Network, self).__init__()
         self.nplanes_in = nplanes_in
         self.nplanes_out = nplanes_out
         self.nblocks = nblocks

@@ -31,9 +31,9 @@ class Block(nn.Module):
         return o3
         
 
-class CARNM(nn.Module):
+class Network(nn.Module):
     def __init__(self, group=1):
-        super(CARNM, self).__init__()
+        super(Network, self).__init__()
         
         self.sub_mean = ops.MeanShift((0.4488, 0.4371, 0.4040), sub=True)
         self.add_mean = ops.MeanShift((0.4488, 0.4371, 0.4040), sub=False)

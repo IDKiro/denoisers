@@ -1,1 +1,1 @@
-from .netmodel import SSUNet
+from .netmodel import Network

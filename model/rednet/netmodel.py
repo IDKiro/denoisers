@@ -2,9 +2,9 @@ import math
 from torch import nn
 
 
-class REDNet(nn.Module):
+class Network(nn.Module):
     def __init__(self, num_features=64):
-        super(REDNet, self).__init__()
+        super(Network, self).__init__()
         self.inconv = nn.Sequential(
             nn.Conv2d(3, num_features, kernel_size=3, padding=1),
             nn.ReLU(inplace=True)

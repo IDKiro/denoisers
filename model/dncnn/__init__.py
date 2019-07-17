@@ -1,1 +1,1 @@
-from .netmodel import DnCNN
+from .netmodel import Network

@@ -1,1 +1,1 @@
-from .netmodel import CBDNet
+from .netmodel import Network, asym_loss

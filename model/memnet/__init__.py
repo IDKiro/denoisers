@@ -1,1 +1,1 @@
-from .netmodel import MemNet
+from .netmodel import Network

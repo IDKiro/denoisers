@@ -1,1 +1,1 @@
-from .netmodel import N3Net
+from .netmodel import Network

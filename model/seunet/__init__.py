@@ -1,1 +1,1 @@
-from .netmodel import SEUNet
+from .netmodel import Network

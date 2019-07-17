@@ -1,1 +1,1 @@
-from .netmodel import RDN
+from .netmodel import Network

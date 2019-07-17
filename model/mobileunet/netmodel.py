@@ -5,9 +5,9 @@ import torch.nn.functional as F
 
 from .mobile import MobileBottleneck, Hswish
 
-class MobileUNet(nn.Module):
+class Network(nn.Module):
     def __init__(self):
-        super(MobileUNet, self).__init__()
+        super(Network, self).__init__()
         self.inc = inconv(3, 32)
 
         self.down1 = nn.Sequential(

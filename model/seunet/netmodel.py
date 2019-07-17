@@ -4,9 +4,9 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
-class SEUNet(nn.Module):
+class Network(nn.Module):
     def __init__(self):
-        super(SEUNet, self).__init__()
+        super(Network, self).__init__()
         self.inc = inconv(3, 32)
         self.se1 = SELayer(32)
         self.down1 = down(32, 64)

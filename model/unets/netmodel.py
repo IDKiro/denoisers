@@ -4,9 +4,9 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
-class UNetS(nn.Module):
+class Network(nn.Module):
     def __init__(self):
-        super(UNetS, self).__init__()
+        super(Network, self).__init__()
         self.inc = inconv(3, 32)
         self.down1 = down(32, 64)
         self.down2 = down(64, 128)

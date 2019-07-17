@@ -5,9 +5,9 @@ import torch.nn.functional as F
 
 from .durb import Block
 
-class DuRB(nn.Module):
+class Network(nn.Module):
     def __init__(self):
-        super(DuRB, self).__init__()
+        super(Network, self).__init__()
         self.inc = inconv(3, 32)
 
         self.durb1 = Block(32, 5, 3, 1, 1)

@@ -23,7 +23,7 @@ def dncnn_batchnorm_init(m, kernelsize=3, b_min=0.025):
     m.momentum = 0.001
 
 
-class DnCNN(nn.Module):
+class Network(nn.Module):
     r"""
     Implements a DnCNN network
     """
@@ -37,7 +37,7 @@ class DnCNN(nn.Module):
         :param residual: whether to add a residual connection from input to output
         :param bn:  whether to add batchnorm layers
         """
-        super(DnCNN, self).__init__()
+        super(Network, self).__init__()
 
         self.residual = residual
         self.nplanes_out = nplanes_out

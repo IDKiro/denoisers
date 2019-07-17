@@ -1,1 +1,1 @@
-from .netmodel import REDNet
+from .netmodel import Network

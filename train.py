@@ -1,17 +1,17 @@
 from __future__ import division
 from __future__ import print_function
 import os, time, scipy.io, shutil
+import numpy as np
+import glob
+import argparse
+import importlib
 import torch
 import torch.nn as nn
 from torch.autograd import Variable
 import torch.nn.functional as F
-import numpy as np
-import glob
-import argparse
 
 from utils import *
 from model import *
-from setting import model_def, loss_def
 
 
 parser = argparse.ArgumentParser(description = 'Train')
@@ -64,7 +64,7 @@ for i in range(len(train_fns)):
     origin_imgs[i] = []
     noise_imgs[i] = []
 
-model = model_def(args.model)
+model = importlib.import_module('.' + args.model, package='model').Network()
 
 checkpoint_dir = os.path.join('./checkpoint/', args.model)
 result_dir = os.path.join('./result/', args.model)
@@ -86,7 +86,12 @@ else:
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
     cur_epoch = 0
 
-criterion = loss_def(args.model)
+# TODO: loss
+if args.model == 'cbdnet':
+    criterion = importlib.import_module('.cbdnet', package='model').asym_loss()
+else:
+    criterion = nn.L1Loss()
+criterion = criterion.cuda()
 
 for epoch in range(cur_epoch, args.epochs + 1):
     cnt=0
@@ -112,7 +117,7 @@ for epoch in range(cur_epoch, args.epochs + 1):
             H = origin_imgs[ind].shape[0]
             W = origin_imgs[ind].shape[1]
 
-            ps_temp = min(H, W, ps) - 1
+            ps_temp = min(H, W, ps + 1) - 1
 
             xx = np.random.randint(0, W-ps_temp)
             yy = np.random.randint(0, H-ps_temp)

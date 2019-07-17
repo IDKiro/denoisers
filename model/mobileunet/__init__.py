@@ -1,1 +1,1 @@
-from .netmodel import MobileUNet
+from .netmodel import Network

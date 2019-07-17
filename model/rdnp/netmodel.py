@@ -35,23 +35,27 @@ class Network(nn.Module):
         G: the growth rate
         G0:local and global feature fusion layers
         '''
-        self.D = 4
+        self.D = 4 # default 20
         self.C = 6
         self.G = 32
         self.G0 = 64
         kernel_size = 3
 
-        #shallow feature extraction 
+        # shallow feature extraction 
         self.SFE = nn.Conv2d(3, self.G0, kernel_size=kernel_size, padding=kernel_size>>1, stride=1)
-        #RDB for paper we have D RDB block
+        # feature extraction 
+        self.FE = nn.Conv2d(self.G0, self.G0, kernel_size=kernel_size, padding=kernel_size>>1, stride=1)
+        # RDB for paper we have D RDB block
         self.RDBS = nn.ModuleList()
         for d in range(self.D):
             self.RDBS.append(RDB(self.G0, self.C, self.G, kernel_size))
-        #Global feature fusion
+        # Global feature fusion
         self.GFF = nn.Sequential(
                 nn.Conv2d(self.D*self.G0, self.G0, kernel_size=1, padding=0 , stride=1), 
-                nn.Conv2d(self.G0, 3, kernel_size, padding=kernel_size>>1, stride=1), 
+                nn.Conv2d(self.G0, self.G0, kernel_size=kernel_size, padding=kernel_size>>1, stride=1), 
         )
+        # feature reconstruction
+        self.FR = nn.Conv2d(self.G0, 3, kernel_size=kernel_size, padding=kernel_size>>1, stride=1)
         #init
         for para in self.modules():
             if isinstance(para, nn.Conv2d):
@@ -60,12 +64,16 @@ class Network(nn.Module):
                     para.bias.data.zero_()
 
     def forward(self, x):
-        out = self.SFE(x)
+        f_1 = self.SFE(x)
+        out = self.FE(f_1)
         RDB_outs = []
         for i in range(self.D):
             out = self.RDBS[i](out)
             RDB_outs.append(out)
         out = torch.cat(RDB_outs, 1)
         out = self.GFF(out)
+        out = f_1 + out 
+
+        out = self.FR(out)
         out = x + out
         return out

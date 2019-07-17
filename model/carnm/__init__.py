@@ -1,1 +1,1 @@
-from .netmodel import CARNM
+from .netmodel import Network

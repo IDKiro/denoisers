@@ -1,1 +1,1 @@
-from .netmodel import GCUNet
+from .netmodel import Network
