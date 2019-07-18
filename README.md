@@ -22,7 +22,7 @@ Pretrained model and dataset: [[OneDrive](https://zjueducn-my.sharepoint.com/:f:
 | UNet    | 37.79 | 0.901 |   239.2   |    31.0    | 16.6  |
 | REDNet  | 37.95 | 0.900 |   184.9   |    0.7     | 14.2  |
 | MWCNN   | 38.17 | 0.901 |   259.0   |    16.2    | 11.1  |
-| RDN+-4  |       |       |           |            |       |
+| RDN+-4  | 38.02 | 0.901 |   355.5   |    1.2     |  6.9  |
 | N3Net-2 | 38.05 | 0.900 |  *294.5*  |   *1.1*    | *0.1* |
 | CBDNet  | 37.75 | 0.898 |   172.0   |    4.3     | 19.7  |
 
@@ -40,6 +40,8 @@ Pretrained model and dataset: [[OneDrive](https://zjueducn-my.sharepoint.com/:f:
 
 ### Expansion
 
+**All the models have been move to the `/@addtional/` folder.**
+
 - RDN: [[Code](https://github.com/yulunzhang/RDN)][[Paper](https://arxiv.org/abs/1802.08797)]
 - CARN & CARNM: [[Code](https://github.com/nmhkahn/CARN-pytorch)][[Paper](https://arxiv.org/abs/1810.05052v1)]
 
@@ -48,6 +50,7 @@ Pretrained model and dataset: [[OneDrive](https://zjueducn-my.sharepoint.com/:f:
 | RDN-4         | 38.02 | 0.901 |   334.1   |    1.1     |  7.3  |
 | CARN          | 37.73 | 0.898 |   272.0   |    0.8     |  7.6  |
 | CARNM         | 37.71 | 0.898 |   149.5   |    0.4     |  6.6  |
+| ResNet        |       |       |           |            |       |
 | UNet-S        | 36.62 | 0.901 |   60.0    |    7.8     | 46.6  |
 | SSnbt-UNet-S  | 35.58 | 0.884 |   35.8    |    9.7     | 37.4  |
 | SE-UNet-S     | 36.50 | 0.900 |   60.0    |    7.8     | 16.6  |
