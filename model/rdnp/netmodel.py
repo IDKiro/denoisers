@@ -35,7 +35,7 @@ class Network(nn.Module):
         G: the growth rate
         G0:local and global feature fusion layers
         '''
-        self.D = 4 # default 20
+        self.D = 20
         self.C = 6
         self.G = 32
         self.G0 = 64

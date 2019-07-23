@@ -16,15 +16,15 @@ Pretrained model and dataset: [[OneDrive](https://zjueducn-my.sharepoint.com/:f:
 - N3Net: [[Code](https://github.com/visinf/n3net)][[Paper](https://arxiv.org/abs/1810.12575)]
 - CBDNet: [[Code](https://github.com/GuoShi28/CBDNet)][[Paper](http://www4.comp.polyu.edu.hk/~cslzhang/paper/CVPR19-CBDNet.pdf)]
 
-| Method  | PSNR  | SSIM  | FLOPs / G | Params / M |  FPS  |
-| ------- | :---: | :---: | :-------: | :--------: | :---: |
-| DnCNN   | 37.81 | 0.898 |   146.2   |    0.6     | 24.2  |
-| UNet    | 37.79 | 0.901 |   239.2   |    31.0    | 16.6  |
-| REDNet  | 37.95 | 0.900 |   184.9   |    0.7     | 14.2  |
-| MWCNN   | 38.17 | 0.901 |   259.0   |    16.2    | 11.1  |
-| RDN+-4  | 38.02 | 0.901 |   355.5   |    1.2     |  6.9  |
-| N3Net-2 | 38.05 | 0.900 |  *294.5*  |   *1.1*    | *0.1* |
-| CBDNet  | 38.15 | 0.900 |   172.0   |    4.3     | 19.7  |
+| Method | PSNR  | SSIM  | FLOPs / G | Params / M |  FPS  |
+| ------ | :---: | :---: | :-------: | :--------: | :---: |
+| DnCNN  | 37.81 | 0.898 |   146.2   |    0.6     | 24.2  |
+| UNet   | 37.79 | 0.901 |   239.2   |    31.0    | 16.6  |
+| REDNet | 37.95 | 0.900 |   184.9   |    0.7     | 14.2  |
+| MWCNN  | 38.17 | 0.901 |   259.0   |    16.2    | 11.1  |
+| RDN+   | 38.19 | 0.903 |  1687.8   |    5.5     |  1.4  |
+| N3Net  | 38.17 | 0.902 |    N/A    |    0.5     |  N/A  |
+| CBDNet | 38.15 | 0.900 |   172.0   |    4.3     | 19.7  |
 
 ### Bad Result
 
@@ -48,6 +48,8 @@ Pretrained model and dataset: [[OneDrive](https://zjueducn-my.sharepoint.com/:f:
 | Method        | PSNR  | SSIM  | FLOPs / G | Params / M |  FPS  |
 | ------------- | :---: | :---: | :-------: | :--------: | :---: |
 | RDN-4         | 38.02 | 0.901 |   334.1   |    1.1     |  7.3  |
+| RDN+-4        | 38.02 | 0.901 |   355.5   |    1.2     |  6.9  |
+| N3Net-2-17    | 38.05 | 0.900 |   294.5   |    1.1     |  0.1  |
 | CARN          | 37.73 | 0.898 |   272.0   |    0.8     |  7.6  |
 | CARNM         | 37.71 | 0.898 |   149.5   |    0.4     |  6.6  |
 | ResNet        | 37.87 | 0.899 |   271.4   |    1.0     | 11.4  |
