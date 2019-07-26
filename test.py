@@ -44,23 +44,21 @@ ps = args.ps
 model = importlib.import_module('.' + args.model, package='model').Network()
 
 if args.flops:
-    if not args.cpu:
-        flops, params = profile(model, input_size=(1, 3, ps, ps), device='cuda')
-    else:
-        flops, params = profile(model, input_size=(1, 3, ps, ps))
+    input = torch.randn(1, 3, 224, 224)
+    flops, params = profile(model, inputs=(input, ))
     print('FLOPs: {flops:.1f} G\t'
         'Params: {params:.1f} M'.format(
         flops=flops*1e-9,
         params=params*1e-6))
     exit(1)
 
-checkpoint_dir = os.path.join('./checkpoint/', args.model)
-
 if not args.cpu:
     print('Using GPU!')
     model.cuda()
 else:
     print('Using CPU!')
+
+checkpoint_dir = os.path.join('./checkpoint/', args.model)
 
 if os.path.exists(os.path.join(checkpoint_dir, 'checkpoint.pth.tar')):
     # load existing model
