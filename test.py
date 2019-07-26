@@ -44,10 +44,10 @@ ps = args.ps
 model = importlib.import_module('.' + args.model, package='model').Network()
 
 if args.flops:
-    input = torch.randn(1, 3, 224, 224)
+    input = torch.randn(1, 3, ps, ps)
     flops, params = profile(model, inputs=(input, ))
-    print('FLOPs: {flops:.1f} G\t'
-        'Params: {params:.1f} M'.format(
+    print('FLOPs: {flops:.2f} G\t'
+        'Params: {params:.2f} M'.format(
         flops=flops*1e-9,
         params=params*1e-6))
     exit(1)
