@@ -71,7 +71,7 @@ else:
     criterion = nn.L1Loss()
 criterion = criterion.cuda()
 
-train_dataset = loadedDataset(input_dir)
+train_dataset = loadedDataset(input_dir, patch_size=ps)
 train_loader = torch.utils.data.DataLoader(
     train_dataset, batch_size=1, shuffle=True, pin_memory=True)
 
@@ -112,17 +112,21 @@ for epoch in range(cur_epoch, args.epochs + 1):
             loss=losses,
             time=time.time()-st))
 
-        # if epoch % save_freq == 0:
-        #     if not os.path.isdir(os.path.join(result_dir, '%04d'%epoch)):
-        #         os.makedirs(os.path.join(result_dir, '%04d'%epoch))
+        if epoch % save_freq == 0:
+            if not os.path.isdir(os.path.join(result_dir, '%04d'%epoch)):
+                os.makedirs(os.path.join(result_dir, '%04d'%epoch))
 
-        #     output_np = output.squeeze().cpu().detach().numpy()
-        #     output_np = chw_to_hwc(np.clip(output_np, 0, 1))
+            origin_np = origin_img.numpy()
+            noise_np = noise_img.numpy()
+            output_np = output.cpu().detach().numpy()
 
-        #     print(output_np.shape)
+            for indp in range(output_np.shape[0]):
+                origin_np_img = chw_to_hwc(origin_np[indp])
+                noise_np_img = chw_to_hwc(noise_np[indp])
+                output_img = chw_to_hwc(np.clip(output_np[indp], 0, 1))
 
-        #     temp = np.concatenate((origin_img, noise_img, output_np), axis=1)
-        #     scipy.misc.toimage(temp*255, high=255, low=0, cmin=0, cmax=255).save(os.path.join(result_dir, '%04d/train_%d_%d.jpg'%(epoch, ind, nind)))
+                temp = np.concatenate((origin_np_img, noise_np_img, output_img), axis=1)
+                scipy.misc.toimage(temp*255, high=255, low=0, cmin=0, cmax=255).save(os.path.join(result_dir, '%04d/train_%d_%d.jpg'%(epoch, ind, indp)))
 
     save_checkpoint({
         'epoch': epoch + 1,
