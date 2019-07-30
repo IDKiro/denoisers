@@ -70,4 +70,4 @@ class loadedDataset(Dataset):
 		patch_origin_img_chw = hwc_to_chw(patch_origin_img)
 		patch_noise_img_chw = hwc_to_chw(patch_noise_img)
 
-		return patch_origin_img_chw, patch_noise_img_chw
+		return patch_noise_img_chw, patch_origin_img_chw
